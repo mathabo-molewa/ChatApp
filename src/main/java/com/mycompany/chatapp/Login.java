@@ -35,7 +35,7 @@ public class Login {
          boolean hasSpecial = false;
                
         // Now I create a loop for the password
-        for (int i = 0; i < password.length();i++)   {
+        for (int i = 0; i < password.length(); i++)   {
             
             // This retreives the character at hand
             char c = password.charAt(i); 

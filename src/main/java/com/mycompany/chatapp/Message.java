@@ -11,14 +11,22 @@ import java.util.Scanner;
  //part 2 of the project - creating message.java 
 public class Message {
     //The fields
-    private String messageID; //
+    public String messageID; //
     private int messageNumber;
-    private String recipient;
+    public String recipient;
     public String messageText;
     private String messageHash;
     
     public static int messageCount = 0;
+    public String setMessageID;
     
+    public Message()   {
+        this.messageID = "";
+        this.messageNumber = 0;
+        this.recipient = "";
+        this.messageText = "";
+        this.messageHash = "";
+    }
     /**
      *
      * @param messageID
@@ -37,25 +45,24 @@ public Message(String messageID, int messageNumber, String recipient, String mes
     this.messageHash = messageHash;
     
 }
-
-    Message() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-  
-
+public void setMessageID(String messageID)    {
+    this.messageID = messageID;
     
-    
+}
+public void setMessageNumber(int messageNumber)   {
+    this.messageNumber = messageNumber;
+}
 
 //Generating 10-digit number
     public String generateID()  {
         
     Random rnd = new Random();
-    String id ="";
+    String id = "";
     
     for (int i = 0; i < 10; i++)    {
       id += rnd.nextInt(10);
 }
+    this.messageID = id;
     return id;
     
     }
@@ -70,18 +77,19 @@ public boolean checkMessageID()  {
      public String checkRecipientCellNumber(String phone) {
     
       if (phone.startsWith("+27") && phone.length() <=13) {
+          this.recipient = phone;
           return "Cellphone number successfully captured";
             
         } else {
             return "Cell phone number is incorrectly formatted or does not contain international code. "
-                    + "Please correct the number and try again, please try again.";
+                    + "Please correct the number and try again.";
       }
      }
      
      
      public String returnRecipient(boolean success)  {
         if (success){
-            return "Cellphone number successfully captured ";
+            return "Cellphone number successfully captured";
             
         } else {
             return "Cell phone number is incorrectly formatted or does not contain international code. "
@@ -92,19 +100,19 @@ public boolean checkMessageID()  {
      //message length
      public String checkMessageLength()  {
          if (messageText.length() <= 250)   {
-             return"Message ready to send";
+             return "Message ready to send";
              
          }
          else{
              int over = messageText.length() - 250;
-             return"Message exceeds 250 characters by " + over + ", please reduce the size";
+             return"Message exceeds 250 characters by " + over + ", please reduce the size.";
          }
      }
      
      //MessageHash
 public String createMessageHash()     {
 
-String idPart = messageID.substring(0, 2);
+String idPart = messageID.length() >= 2? messageID.substring(0, 2): messageID;
 
 
 String[] words = messageText.split(" ");
@@ -129,19 +137,19 @@ public String sentMessage()  {
     int option = input.nextInt(); //logic goes here
 
     switch (option) {
-            case 1: {
+            case 1: 
                 return "Message successfully sent.";
-            }
-            case 2: {
+            
+            case 2: 
                 return "Press 0 to delete message.";
-            }
-            case 3: {
+            
+            case 3: 
                 storeMessage();
                 return "Message successfully stored.";
-            }
-            default: {
+            
+            default: 
                 return "Invalid input";
-            }
+            
 
     }
 }   
@@ -166,9 +174,9 @@ public void storeMessage()   {
     
     obj.put("MessageID", messageID);
     obj.put("Recipient", recipient);
-    obj.put("MessageI", messageText);
+    obj.put("MessageText", messageText);
     
-    System.out.println("Stored JSON message:");
+    System.out.println("Stored JSON message: " +obj.toString());
     
 
 } 

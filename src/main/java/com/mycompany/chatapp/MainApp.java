@@ -4,214 +4,183 @@
  */
 package com.mycompany.chatapp;
 
-
-/**
- *
- * @author matha
- */
-
 import java.util.Scanner;
 
-//Main.java - is updated for Part 2 of the project
+// MainApp.java - updated for Part 2 of the project
 public class MainApp {
     public static void main(String[] args) {
-        
-        
-        // Create Scanner object to get input from user
-            Scanner input = new Scanner(System.in);
-            
-            String firstName;
-            System.out.println("Please enter your first name: ");
-            firstName = input.next();
-            
-            String lastName;
-            System.out.println("Please enter your last name: ");
-            lastName = input.next();
-        input.nextLine();
-            
-            //***Part 1 is for registration and login***
-            
-            // Create Login object to use its methods
-            Login login = new Login();
-            //Call loginUser() and store the boolean result
-            
-            // REGISTRATION SECTION
 
-            System.out.println("=== USER REGISTRATION ===");
-            
-            String username;
-            
-            // Keep asking for username until it is correct
-            while (true)  {
-                System.out.print("Enter a username: ");
-                username = input.nextLine();
-                
-                // Check if username is valid
-                if (!login.checkUserName(username)) {
-                    System.out.println("Username is not correct");
-                    // exit loop if correct
-                    continue;
-                    
-                }
-                    // Show error if username is wrong
-                    System.out.println("Username successfully captured");
-                    break;
-                    
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("Please enter your first name: ");
+        String firstName = input.nextLine();
+
+        System.out.println("Please enter your last name: ");
+        String lastName = input.nextLine();
+
+        // *** Part 1: Registration and Login ***
+
+        Login login = new Login();
+
+        System.out.println("=== USER REGISTRATION ===");
+
+        // Keep asking for a valid username
+        String username;
+        while (true) {
+            System.out.print("Enter a username (must contain '_' and be 5 chars or fewer): ");
+            username = input.nextLine();
+
+            if (!login.checkUserName(username)) {
+                System.out.println("Username is not correctly formatted. Please try again.");
+                continue;
             }
-            
-            
-            // Ask user for password
-            System.out.print("Enter a password: ");
-            String password = input.nextLine();
-            
-            // Ask user for phone number
+            System.out.println("Username successfully captured.");
+            break;
+        }
+
+        // Keep asking for a valid password
+        String password;
+        while (true) {
+            System.out.print("Enter a password (8+ chars, 1 capital, 1 number, 1 special character): ");
+            password = input.nextLine();
+
+            if (!login.checkPasswordComplexity(password)) {
+                System.out.println("Password is not correctly formatted. Please try again.");
+                continue;
+            }
+            System.out.println("Password successfully captured.");
+            break;
+        }
+
+        // Keep asking for a valid phone number
+        String phone;
+        while (true) {
             System.out.print("Enter your South African phone number (+27...): ");
-            String phone = input.nextLine();
-            
-            // Register the user and store message
-            String response = login.registerUser(username, password, phone);
-            
-            // Show registration result
-            System.out.println(response);
-            
-            
-            // LOGIN SECTION
-            
-            System.out.println("=== USER LOGIN ===");
-            
-            // Ask for username
+            phone = input.nextLine();
+
+            if (!login.checkCellPhoneNumber(phone)) {
+                System.out.println("Phone number incorrectly formatted. Please try again.");
+                continue;
+            }
+            System.out.println("Phone number successfully captured.");
+            break;
+        }
+
+        // Register the user
+        String response = login.registerUser(username, password, phone);
+        System.out.println(response);
+
+        // FIX: string now matches what registerUser() actually returns
+        if (response.equals("User registered successfully.")) {
+
+            // *** LOGIN SECTION ***
+            System.out.println("\n=== USER LOGIN ===");
+
             System.out.print("Enter your username: ");
             String loginUsername = input.nextLine();
-            
-            // Ask for password
+
             System.out.print("Enter your password: ");
             String loginPassword = input.nextLine();
-            
-            // Check if login details are correct
+
             boolean loggedIn = login.loginUser(loginUsername, loginPassword);
-            
-            // Get login message
             String loginMessage = login.returnLoginStatus(loggedIn);
-            
-            // Show login result
             System.out.println(loginMessage);
-            
-            
-            //***Part 2 - is for messages only if the user is logged in***
-            // only if logged in
-            
+
+            // *** Part 2: Messaging (only if logged in) ***
             if (loggedIn) {
-                
-                System.out.println("Welcome to ChatApp."); //Login successful and user is welcomed
-                //Launch the menu
+
+                System.out.println("Welcome to ChatApp, " + firstName + lastName + "!");
+
                 boolean running = true;
                 while (running) {
-                    
+                    System.out.println("\n--- MENU ---");
                     System.out.println("1. Send Messages");
-                    System.out.println("2. Coming soon");
+                    System.out.println("2. Show recently sent messages");
                     System.out.println("3. Exit");
-                    
-                    System.out.println("Pick a number: ");//Ask user to pick an option
-                    
+                    System.out.print("Pick a number: ");
+
                     int choice = input.nextInt();
                     input.nextLine();
-                    
-                    
-                    switch (choice)     {
+
+                    switch (choice) {
                         case 1: {
-                            System.out.println("Send messages"); //if user picks option 1
-                            
-                            //Ask how many messages the user would like to send
-                            System.out.println("How many messages would you like to send?");
-                            
-                              
-                            int numMessages = input.nextInt(); //cannot be zero as loop won't run
+                            System.out.println("\n--- SEND MESSAGES ---");
+                            System.out.print("How many messages would you like to send? ");
+                            int numMessages = input.nextInt();
                             input.nextLine();
-                            
+
                             for (int i = 0; i < numMessages; i++) {
                                 Message message = new Message();
-                                String recipient;
-                                numMessages = i + 1;
-                                System.out.println("You are sending " + numMessages + "messages");
-                                
-                                
-                                //Recipient
-                                System.out.println("Enter the recipient: ");
-                                recipient = input.nextLine();
-                                System.out.println(message.checkRecipientCellNumber(recipient));
-                                
-                                //Message Text
-                                System.out.println("Enter your message (250 chars max): ");
-                                message.messageText = input.nextLine();
-                                
-                                //Check message length
-                                String lengthMessage = message.checkMessageLength();
-                                System.out.println(lengthMessage);
-                                
-                                if (message.messageText.length() > 250)   {
-                                    i--;
-                                    continue;
+
+                                // FIX: removed the line that overwrote numMessages
+                                System.out.println("\nComposing message " + (i + 1) + " of " + numMessages);
+
+                                // Recipient
+                                String recipientResult = "";
+                                while (!recipientResult.equals("Cellphone number successfully captured")) {
+                                    System.out.print("Enter the recipient's number (+27...): ");
+                                    String recipient = input.nextLine();
+                                    recipientResult = message.checkRecipientCellNumber(recipient);
+                                    System.out.println(recipientResult);
                                 }
-                                
-                                //Generate ID and hash
+
+                                // Message text
+                                while (true) {
+                                    System.out.print("Enter your message (250 chars max): ");
+                                    message.messageText = input.nextLine();
+                                    String lengthMessage = message.checkMessageLength();
+                                    System.out.println(lengthMessage);
+
+                                    if (message.messageText.length() <= 250) {
+                                        break; // message is valid, move on
+                                    }
+                                    // Otherwise loop again and ask for a shorter message
+                                }
+
+                                // Generate ID and hash
                                 String messageID = message.generateID();
                                 String messageHash = message.createMessageHash();
-                                
-                                System.out.println("Message ID: " + message.generateID());
-                                    
-                                System.out.println("Message Hash: " + message.createMessageHash());
-                                    
-                                System.out.println("Recipient : " + message.checkRecipientCellNumber(phone));    
-                                    
+
+                                System.out.println("Message ID: " + messageID);
+                                System.out.println("Message Hash: " + messageHash);
                                 System.out.println("Message: " + message.messageText);
-                                 
-                                System.out.println(message.sentMessage());
+
+                                // Ask what to do with the message
+                                String sendResult = message.sentMessage();
+                                System.out.println(sendResult);
+
+                                // Only count it if the user actually sent it
+                                if (sendResult.equals("Message successfully sent.")) {
                                     Message.messageCount++;
+                                }
                             }
-                                String messageCount = null;
-                                
-                          
-                               System.out.println("Total Messages sent: " + Message.messageCount); 
-                               break;
-                        }
-                        
-                            
-                            
-                        case 2: System.out.println("Coming Soon"); //if user picks option 2
+
+                            System.out.println("\nTotal messages sent this session: " + Message.messageCount);
                             break;
-                        
-                            
-                        case 3: running = false; //if user picks option 3 - quits and exits the while loop
-                            System.out.println("Exiting ChatApp");
-                        break;
-                        
-                        
-                        default: //If user eneters an invalid option
-                            System.out.println("That wasn't an option. Please try again.");
-                            
-                            
+                        }
+
+                        case 2:
+                            System.out.println("Coming Soon!");
+                            break;
+
+                        case 3:
+                            running = false;
+                            System.out.println("Exiting ChatApp. Goodbye, " + firstName + "!");
+                            break;
+
+                        default:
+                            System.out.println("Invalid option. Please choose 1, 2, or 3.");
                     }
                 }
+
+            } else {
+                System.out.println("Login failed. Closing app.");
             }
-            else    {
-                System.out.println("Login failed, closing app");
-                
-            }
-            input.close();
+
+        } else {
+            System.out.println("Registration failed. Closing app.");
         }
-        }        
 
-        
-        
-
-
-        
-     
-
-
-
-
-
-
-
-
+        input.close();
+    }
+}
