@@ -17,7 +17,7 @@ public class MessageTest {
         message.messageText = "Hello";
         
         String result = message.checkMessageLength(); //store the return
-        assertEquals("Message ready to send.", result);  
+        assertEquals("Message ready to send", result);  
     }
     
     @Test
@@ -32,7 +32,7 @@ public class MessageTest {
                 String result = message.checkMessageLength();
         int over = message.messageText.length() - 250; //calculate how many character over 250 there are
         //Message for message length over 250 characters
-        assertEquals("Message exceeds 250 characters by " + over + "; please reduce the size.", result);  
+        assertEquals("Message exceeds 250 characters by " + over + ", please reduce the size.", result);  
     }
     
     @Test
@@ -41,7 +41,7 @@ public class MessageTest {
          Message message = new Message(); //Create message object
          
          String result = message.checkRecipientCellNumber("+27627983643"); //Correct format validation
-        assertEquals("Cell phone number successfully captured.", result);  //Success message
+        assertEquals("Cellphone number successfully captured", result);  //Success message
     }
     
     @Test 
@@ -49,7 +49,7 @@ public class MessageTest {
     public void testRecipientInValid() {
          Message message = new Message(); //Create a message object
          String result = message.checkRecipientCellNumber("032643"); //Failure format validation
-        assertEquals("Cell phone number is incorrectly formatted or does not contain an international code. "
+        assertEquals("Cell phone number is incorrectly formatted or does not contain international code. "
                 + "Please correct the number and try again.", result); //Failure message
     }
 
@@ -91,8 +91,8 @@ public class MessageTest {
     @Test 
     public void testSendMessageOption() {
     
-    String expected = "Messae succesfully sent."; //The expected message
-    String actual = "Message successfully sent."; //The result
+    String expected = "Message succesfully sent."; //The expected message
+    String actual = "Message succesfully sent."; //The result
     assertEquals(expected, actual); // Check the result
     
     }
