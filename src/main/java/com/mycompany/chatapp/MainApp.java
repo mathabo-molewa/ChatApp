@@ -11,10 +11,11 @@ public class MainApp {
     public static void main(String[] args) {
 
         Scanner input = new Scanner(System.in);
-
+        
+        //Part 2- add user's name
         System.out.println("Please enter your first name: ");
         String firstName = input.nextLine();
-
+        //Part 2- add user's surname
         System.out.println("Please enter your last name: ");
         String lastName = input.nextLine();
 
@@ -32,7 +33,7 @@ public class MainApp {
 
             if (!login.checkUserName(username)) {
                 System.out.println("Username is not correctly formatted. Please try again.");
-                continue;
+                continue; //loops if incorrect details are added
             }
             System.out.println("Username successfully captured.");
             break;
@@ -46,7 +47,7 @@ public class MainApp {
 
             if (!login.checkPasswordComplexity(password)) {
                 System.out.println("Password is not correctly formatted. Please try again.");
-                continue;
+                continue; //loops if incorrect details are added
             }
             System.out.println("Password successfully captured.");
             break;
@@ -60,7 +61,7 @@ public class MainApp {
 
             if (!login.checkCellPhoneNumber(phone)) {
                 System.out.println("Phone number incorrectly formatted. Please try again.");
-                continue;
+                continue; //loops if incorrect details are added
             }
             System.out.println("Phone number successfully captured.");
             break;
@@ -74,6 +75,7 @@ public class MainApp {
         if (response.equals("User registered successfully.")) {
 
             // *** LOGIN SECTION ***
+            //User inputs their login details
             System.out.println("\n=== USER LOGIN ===");
 
             System.out.print("Enter your username: ");
@@ -89,10 +91,11 @@ public class MainApp {
             // *** Part 2: Messaging (only if logged in) ***
             if (loggedIn) {
 
-                System.out.println("Welcome to ChatApp, " + firstName + lastName + "!");
+                System.out.println("Welcome to ChatApp, " + firstName + lastName + "!"); //Part 2 - add user's name and username along with a welcome message after they logged in.
 
                 boolean running = true;
                 while (running) {
+                    //display the menu for the user to choose from
                     System.out.println("\n--- MENU ---");
                     System.out.println("1. Send Messages");
                     System.out.println("2. Show recently sent messages");
@@ -105,7 +108,8 @@ public class MainApp {
                     switch (choice) {
                         case 1: {
                             System.out.println("\n--- SEND MESSAGES ---");
-                            System.out.print("How many messages would you like to send? ");
+                            //Ask user to input number of messages
+                            System.out.print("How many messages would you like to send? "); 
                             int numMessages = input.nextInt();
                             input.nextLine();
 
@@ -118,7 +122,7 @@ public class MainApp {
                                 // Recipient
                                 String recipientResult = "";
                                 while (!recipientResult.equals("Cellphone number successfully captured")) {
-                                    System.out.print("Enter the recipient's number (+27...): ");
+                                    System.out.print("Enter the recipient's number (+27...): "); // ask user to input their cellphone number 
                                     String recipient = input.nextLine();
                                     recipientResult = message.checkRecipientCellNumber(recipient);
                                     System.out.println(recipientResult);
@@ -126,7 +130,7 @@ public class MainApp {
 
                                 // Message text
                                 while (true) {
-                                    System.out.print("Enter your message (250 chars max): ");
+                                    System.out.print("Enter your message (250 chars max): ");  //Maximum message characters is 250.
                                     message.messageText = input.nextLine();
                                     String lengthMessage = message.checkMessageLength();
                                     System.out.println(lengthMessage);
@@ -145,7 +149,7 @@ public class MainApp {
                                 System.out.println("Message Hash: " + messageHash);
                                 System.out.println("Message: " + message.messageText);
 
-                                // Ask what to do with the message
+                                // Ask the user what to do with their message
                                 String sendResult = message.sentMessage();
                                 System.out.println(sendResult);
 
@@ -160,27 +164,27 @@ public class MainApp {
                         }
 
                         case 2:
-                            System.out.println("Coming Soon!");
+                            System.out.println("Coming Soon!"); //display message if option 2 is chosen
                             break;
 
                         case 3:
                             running = false;
-                            System.out.println("Exiting ChatApp. Goodbye, " + firstName + "!");
+                            System.out.println("Exiting ChatApp. Goodbye, " + firstName + "!"); // display message if option 3 is chosen
                             break;
 
                         default:
-                            System.out.println("Invalid option. Please choose 1, 2, or 3.");
+                            System.out.println("Invalid option. Please choose 1, 2, or 3."); // display message if user enters an unavailable options
                     }
                 }
 
             } else {
-                System.out.println("Login failed. Closing app.");
+                System.out.println("Login failed. Closing app."); //displays if user fails to login, the app will automatically close.
             }
 
         } else {
-            System.out.println("Registration failed. Closing app.");
+            System.out.println("Registration failed. Closing app."); // displays if user fails to register, the app will automatically close
         }
-
+       //Close scanner
         input.close();
     }
 }
