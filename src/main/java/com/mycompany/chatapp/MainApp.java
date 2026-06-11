@@ -13,6 +13,7 @@ public class MainApp {
         Scanner input = new Scanner(System.in);
         
         //Part 2- add user's name
+       System.out.println("Welcome to ChatApp");
         System.out.println("Please enter your first name: ");
         String firstName = input.nextLine();
         //Part 2- add user's surname
@@ -77,21 +78,33 @@ public class MainApp {
             // *** LOGIN SECTION ***
             //User inputs their login details
             System.out.println("\n=== USER LOGIN ===");
+            
+            boolean loggedIn = false;
+            String loginUsername = "";
+            String loginPassword = "";
+            
+            while (!loggedIn)   {
+                
 
             System.out.print("Enter your username: ");
-            String loginUsername = input.nextLine();
+            loginUsername = input.nextLine();
 
             System.out.print("Enter your password: ");
-            String loginPassword = input.nextLine();
+            loginPassword = input.nextLine();
 
-            boolean loggedIn = login.loginUser(loginUsername, loginPassword);
-            String loginMessage = login.returnLoginStatus(loggedIn);
-            System.out.println(loginMessage);
+            loggedIn = login.loginUser(loginUsername, loginPassword);
+            System.out.println(login.returnLoginStatus(loggedIn));
+             if (!loggedIn) {
+                System.out.println("Login failed. please try again.\n");
+            }
+            }
+             System.out.println("Login successful!"); //Only if login is success then it continues
+             Message.loadStoredMessages();
+             
 
             // *** Part 2: Messaging (only if logged in) ***
-            if (loggedIn) {
-
-                System.out.println("Welcome to ChatApp, " + firstName + lastName + "!"); //Part 2 - add user's name and username along with a welcome message after they logged in.
+          
+    System.out.println("Welcome to ChatApp, " + firstName + " " + lastName + "!"); //Part 2 - add user's name and username along with a welcome message after they logged in.
 
                 boolean running = true;
                 while (running) {
@@ -100,6 +113,7 @@ public class MainApp {
                     System.out.println("1. Send Messages");
                     System.out.println("2. Show recently sent messages");
                     System.out.println("3. Exit");
+                    System.out.println("4. Stored Messages");
                     System.out.print("Pick a number: ");
 
                     int choice = input.nextInt();
@@ -115,6 +129,7 @@ public class MainApp {
 
                             for (int i = 0; i < numMessages; i++) {
                                 Message message = new Message();
+                                message.setMessageNumber(i + 1);
 
                                 // FIX: removed the line that overwrote numMessages
                                 System.out.println("\nComposing message " + (i + 1) + " of " + numMessages);
@@ -147,10 +162,11 @@ public class MainApp {
 
                                 System.out.println("Message ID: " + messageID);
                                 System.out.println("Message Hash: " + messageHash);
+                                System.out.println("Recipient: " + message.recipient);
                                 System.out.println("Message: " + message.messageText);
-
+                                
                                 // Ask the user what to do with their message
-                                String sendResult = message.sentMessage();
+                                String sendResult = message.sentMessage(input);
                                 System.out.println(sendResult);
 
                                 // Only count it if the user actually sent it
@@ -159,32 +175,123 @@ public class MainApp {
                                 }
                             }
 
-                            System.out.println("\nTotal messages sent this session: " + Message.messageCount);
+                            System.out.println("Total messages sent this session: " + Message.messageCount);
                             break;
                         }
 
                         case 2:
-                            System.out.println("Coming Soon!"); //display message if option 2 is chosen
+                            if(Message.getSentMessages().isEmpty()) {
+                            System.out.println("No sent messages."); //display message if option 2 is chosen
+                            }
+                            else {
+                                for(String msg : Message.getSentMessages())  {
+                                    System.out.println(msg);
+                                }
+                            }
+                            
+                            
                             break;
 
                         case 3:
                             running = false;
                             System.out.println("Exiting ChatApp. Goodbye, " + firstName + "!"); // display message if option 3 is chosen
                             break;
+                            
+                        case 4:
+                            storedMessagesMenu(input);
+                            break;
 
                         default:
-                            System.out.println("Invalid option. Please choose 1, 2, or 3."); // display message if user enters an unavailable options
+                            System.out.println("Invalid option. Please choose 1, 2, 3 or 4."); // display message if user enters an unavailable options
                     }
                 }
-
-            } else {
-                System.out.println("Login failed. Closing app."); //displays if user fails to login, the app will automatically close.
-            }
-
-        } else {
+        } 
+      else {
             System.out.println("Registration failed. Closing app."); // displays if user fails to register, the app will automatically close
         }
-       //Close scanner
+        //Close scanner
         input.close();
     }
+     
+                            //PART 3//
+    
+    //Stored messages sub menu
+        public static void storedMessagesMenu(Scanner input) {
+            
+           Message message = new Message();
+           boolean backToMain = false;
+           
+           while(!backToMain)  {
+               
+           //Menu options
+           System.out.println("\nStored Messages Menu");
+           
+           System.out.println("a) Display all stored messages");
+           System.out.println("b) Display longest message");
+           System.out.println("c) Search by message ID");
+           System.out.println("d) Search by recipient");
+           System.out.println("e) Delete by hash");
+           System.out.println("f) Display report");
+           System.out.println("g) Return to main menu");
+           
+           System.out.print("Choose an option: "); //Ask user for input
+           String option = input.nextLine().toLowerCase();
+            
+         
+           
+           switch(option)   {
+               
+               case "a":
+                   if (Message.getStoredMessages().isEmpty()) {
+                   System.out.println("No stored messages.");
+               } 
+                   else {
+                       for (int i = 0; i < Message.getStoredMessages().size(); i++)  {
+                      System.out.println("Message " + (i + 1) + ": " + Message.getStoredMessages().get(i));
+                      System.out.println("---------------------------------------------");
+                   }
+                   
+                }
+                   break;
+                       
+               
+               case "b": 
+                   System.out.println("Longest message: " + message.displayLongestMessage());
+                   break;
+                   
+               case "c":
+                   System.out.print("Enter Message ID: ");
+                   String id = input.nextLine();
+                   
+                   System.out.println(message.searchByMessageID(id));
+                   break;
+                   
+               case "d":
+                   System.out.print("Enter recipient: ");
+                   String recipient = input.nextLine();
+                   
+                   System.out.println(message.searchByRecipient(recipient));
+                   break;
+                   
+               case "e":
+                   System.out.print("Enter hash: ");
+                   String hash = input.nextLine();
+                   System.out.println(message.deleteByHash(hash));
+                   break;
+                   
+               case "f":
+                   System.out.println(message.printMessages());
+                   break;
+                   
+               case "g":
+                   backToMain = true;
+                   break;
+                   
+               default:
+                   //Invalid message output
+                   System.out.println("Invalid option. Please enter a, b, c, d, e, f or g.");
+           }  
+        }
+        }
+       
 }

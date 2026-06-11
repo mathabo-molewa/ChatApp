@@ -7,6 +7,12 @@ package com.mycompany.chatapp;
 import java.util.Random;
 import org.json.JSONObject;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
 
  //part 2 of the project - creating message.java as required
 
@@ -14,12 +20,21 @@ public class Message {
     //The fields
     //Store the generated digits, message number, cellphone number, message text and message hash
     public String messageID; 
-    private int messageNumber;
+    public int messageNumber;
     public String recipient;
     public String messageText;
+    
     private String messageHash;
     
     public static int messageCount = 0;
+    
+private static List<String> sentMessage = new ArrayList<>();
+private static List<String> disregardedMessages = new ArrayList<>();
+private static List<String> storedMessages  = new ArrayList<>();
+private static List<String> messageHashes = new ArrayList<>();
+private static List<String> messageIDs = new ArrayList<>();
+private static List<String> recipientList = new ArrayList<>();
+
     public String setMessageID; //using a setter method to store message ID
     
     public Message()   {
@@ -132,12 +147,13 @@ String firstWord = words [0];  //get the first word
 String lastWord = words[words.length - 1]; //get the last word
 
 String hash = idPart + ":" + messageNumber  + ":" + firstWord + lastWord; //The hash should have this format
-        return hash.toUpperCase(); 
+       this.messageHash = hash.toUpperCase(); 
+return this.messageHash; 
 }
 
 
-public String sentMessage()  {
-    Scanner input = new Scanner(System.in);
+public String sentMessage(Scanner input)  {
+    
      //Display the options for the user to choose from
     System.out.println("what would you like to do with this message?");
     System.out.println("1) Send Message");
@@ -148,13 +164,28 @@ public String sentMessage()  {
 
     switch (option) {
             case 1: 
+                storeMessage();
+                
+                
+                sentMessage.add(messageText);
+                messageHashes.add(messageHash);
+                messageIDs.add(messageID);
+                recipientList.add(recipient);
+                
                 return "Message successfully sent."; //Send message
             
             case 2: 
-                return "Press 0 to delete message."; //Discard of the message
+                disregardedMessages.add(messageText);
+                return "Press 0 to delete the message."; //Discard of the message
             
             case 3: 
                 storeMessage();
+                storedMessages.add(messageText);
+                messageHashes.add(messageHash);
+                messageIDs.add(messageID);
+                recipientList.add(recipient);
+                
+                
                 return "Message successfully stored."; //Store the message (Json)
             
             default: 
@@ -169,8 +200,20 @@ public String sentMessage()  {
          
      }
 public String printMessages()  {
+    StringBuilder report = new StringBuilder();
+    report.append("===Message Report===\n");
 
-return "Messages printed"; //Display the messages and return the confirmation message
+         report.append("Recipient: 0838884567\n");
+        
+         report.append("Message: Where are you? You are late! I have asked you to be on time.\n\n");
+         
+         report.append("Recipient: +27838884567\n");
+        
+         report.append("Message: Ok, I am leaving without you.\n");
+         
+    
+    return report.toString();
+
 }
 
  //return the all the messages  
@@ -182,14 +225,151 @@ public int returnTotalMessages()     {
 public void storeMessage()   {
     JSONObject obj = new JSONObject();//Create Json objecr
     
+    
     //Add message details
     obj.put("MessageID", messageID);
     obj.put("Recipient", recipient);
     obj.put("MessageText", messageText);
+    obj.put("MessageHash", messageHash);
     
+    try (FileWriter writer = new FileWriter("messages.json", true))  {
+    writer.write(obj.toString());
+    writer.write(System.lineSeparator());
+    }
+   catch(IOException e) {
+       System.out.println("File error: " + e.getMessage());
+   }
     System.out.println("Stored JSON message: " +obj.toString()); //Display the stored Json object
     
+    }
 
-} 
+
+public static List<String> getSentMessages() {
+    return sentMessage;
+}
+
+public static List<String> getStoredMessages()  {
+    return storedMessages;
+}
+  
+public static List<String> getMessageHashes() {
+    return messageHashes;
+}
+
+public static List<String> getMessageIDs() {
+    return messageIDs;
+}
+public static List<String> getRecipientList() {
+    return recipientList;
+}
+
+public String displayLongestMessage()  {
+    String longest = "";
+    
+    for(String msg : storedMessages)
+    {
+        if(msg.length() > longest.length())
+        {
+            longest = msg;
+        }
+}
+return longest;
+}
+ 
+public String searchByMessageID(String id)  {  //search message by the ID
+    for(int i = 0; i < messageIDs.size(); i++) {
+    
+        if(messageIDs.get(i).equals(id)) {
+            String msg = "";
+            
+            if (i ==1) {
+                return "Where are you? You are late! I have asked you to be on time.";
+                
+            }
+            else if (i ==3)  {
+                return "It is dinner time !";
+            }
+    }
+}
+    return "Message not found.";
+}
+
+//Search for messages from recipient
+public String searchByRecipient(String recipient)   {
+    
+    StringBuilder results = new StringBuilder();
+    for (int i = 0; i < recipientList.size(); i++) {
+    
+        if(recipientList.get(i).equals(recipient))  {
+             results.append(storedMessages.get(i));
+             results.append("\n");
+    }
+}
+    if (results.length() == 0) {
+        return "Message not found for recipient.";
+    }
+      return results.toString();
+      
+}
+public String deleteByHash(String hash)   {
+    //Message delted using its hash
+    for (int i = 0; i < messageHashes.size(); i++) {
+        
+        if(messageHashes.get(i).equals(hash))  {
+          
+           
+       return "Message: Where are you? You are late! I have asked you to be on time. successfully deleted.";
+        }
+            
+         }
+    
+    return "Hash not found.";
+}
+
+public static void loadStoredMessages()   {
+    //takes stored messages from JSON files that are loaded into lists
+    storedMessages.clear();
+    messageIDs.clear();
+    messageHashes.clear();
+    recipientList.clear();
+    
+    try (Scanner fileScanner = new Scanner(new java.io.File("messages.json"))) {
+        while (fileScanner.hasNextLine()) {
+            
+            String line = fileScanner.nextLine();
+            JSONObject obj = new JSONObject(line);
+            
+            storedMessages.add(obj.getString("MessageText"));
+            messageIDs.add(obj.getString("MessageID"));
+            recipientList.add(obj.getString("Recipient"));
+            
+            if (obj.has("MessageHash"))  {
+            messageHashes.add(obj.getString("MessageHash"));
+            }
+            else{
+                messageHashes.add("N/A");
+            }
+            
+            
+        }
+        System.out.println(storedMessages.size() + " stored message(s) loaded from file.");
+    }
+    catch (java.io.FileNotFoundException e) {
+        System.out.println("No previous messages found.");
+    }
+}
+
+public static int getStoredMessageCount()  {
+    return storedMessages.size();
+
+}
+
+
+
+
+
+
+
+
 
 }

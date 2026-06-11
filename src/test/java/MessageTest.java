@@ -4,6 +4,7 @@
  */
 import com.mycompany.chatapp.Message;
 
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -90,7 +91,7 @@ public class MessageTest {
     }
     @Test 
     public void testSendMessageOption() {
-    
+   
     String expected = "Message succesfully sent."; //The expected message
     String actual = "Message succesfully sent."; //The result
     assertEquals(expected, actual); // Check the result
@@ -125,12 +126,130 @@ public class MessageTest {
         instance.storeMessage(); //Stores the message
         assertNotNull(instance); //Checks that the object exists
     }
-     
     
+    private void loadTestData()   {
+       Message.getSentMessages().clear();
+       Message.getStoredMessages().clear();
+       Message.getMessageIDs().clear();
+       Message.getMessageHashes().clear();
+       Message.getRecipientList().clear();
+       
+       //Sent- Message 1
+       Message.getSentMessages().add("Did you get the cake?");
+       Message.getMessageIDs().add("1111");
+       Message.getRecipientList().add("+27834557896");
+       Message.getMessageHashes().add("H1");
+       
+       //Stored- Message 2
+       Message.getStoredMessages().add("Where are you? You are late! I have asked you to be on time.");
+       Message.getMessageIDs().add("2222");
+       Message.getRecipientList().add("0838884567");
+       Message.getMessageHashes().add("H2");
+       
+       //Disregard- Message 3
+       Message.getSentMessages().add("");
+       Message.getMessageIDs().add("3333");
+       Message.getRecipientList().add("+00000000000");
+       Message.getMessageHashes().add("H1");
+       Message.getMessageHashes().add("H3");
+       
+       //Sent- Message 4
+       Message.getSentMessages().add("It is dinner time !");
+       Message.getMessageIDs().add("4444");
+       Message.getRecipientList().add("0838884567");
+       Message.getMessageHashes().add("H4");
+       
+       //Stored- Message 5
+       Message.getStoredMessages().add("Ok, I am leaving without you.");
+       Message.getMessageIDs().add("5555");
+       Message.getRecipientList().add("+27838884567");
+       Message.getMessageHashes().add("H5");
+       
+    }
     
+@Test
+public void testSentMessagesArray_correctlyPopulated() {
+  //sent message list
+    loadTestData();
     
+    assertTrue(Message.getSentMessages().contains("Did you get the cake?"));
+    assertTrue(Message.getSentMessages().contains("It is dinner time !"));
+}
     
-    
+@Test 
+public void testDisplayLongestMessage_returnsCorrectMessage()  {
+       //longest stored message shows
+    loadTestData();
+       
+    Message message = new Message();
+
+    String result = message.displayLongestMessage();
+    assertEquals("Where are you? You are late! I have asked you to be on time.", result);
 }
 
+@Test
+public void testSearchByMessageID_returnsCorrectMessage() {
+   //Searchy by ID works
+    loadTestData();
+    Message message = new Message();
     
+    String result = message.searchByMessageID("4444");
+    
+    assertEquals("It is dinner time !", result);
+    
+}
+ @Test
+ public void testSearchByRecipient_returnsAllMatchingMessages() {
+     //searchy by recipient return all the matching messages
+     Message message = new Message();
+     loadTestData();
+     String result = message.searchByRecipient("0838884567");
+   
+        assertTrue(result.contains("Where are you? You are late! I have asked you to be on time.\n "));
+        assertTrue(result.contains("Ok, I am leaving without you."));
+ 
+ }
+ @Test
+ public void testDeleteByHash_removesCorrectMessage()  {
+     //messages are dleted by hash
+     loadTestData();
+     
+     Message message = new Message();
+     
+    Message.getStoredMessages().add("Temp message");
+    Message.getMessageHashes().add("HASH123");
+    Message.getMessageIDs().add("9999");
+    Message.getRecipientList().add("+27000000000");
+    
+    String result = message.deleteByHash("HASH123");
+            
+     assertEquals("Message: Where are you? You are late! I have asked you to be on time. successfully deleted.", result);
+ 
+ }
+ 
+ @Test
+ public void testDisplayReport_containsRequiredFields()  {
+     //Report has all the message details
+     loadTestData();
+     
+     Message message = new Message();
+     
+     String report = message.printMessages();
+     
+     assertTrue(report.contains("Where are you? You are late! I have asked you to be on time."));
+     assertTrue(report.contains("Ok, I am leaving without you"));
+     assertTrue(report.contains("+27838884567"));
+    
+ }
+            
+     
+     
+ }
+ 
+ 
+
+
+
+
+
+        
