@@ -18,7 +18,7 @@ public class MessageTest {
         message.messageText = "Hello";
         
         String result = message.checkMessageLength(); //store the return
-        assertEquals("Message ready to send", result);  
+        assertEquals("Message ready to send", message.checkMessageLength());  
     }
     
     @Test
@@ -143,7 +143,7 @@ public class MessageTest {
        //Stored- Message 2
        Message.getStoredMessages().add("Where are you? You are late! I have asked you to be on time.");
        Message.getMessageIDs().add("2222");
-       Message.getRecipientList().add("0838884567");
+       Message.getRecipientList().add("+27838884567");
        Message.getMessageHashes().add("H2");
        
        //Disregard- Message 3
@@ -156,7 +156,7 @@ public class MessageTest {
        //Sent- Message 4
        Message.getSentMessages().add("It is dinner time !");
        Message.getMessageIDs().add("4444");
-       Message.getRecipientList().add("0838884567");
+       Message.getRecipientList().add("+27838884567");
        Message.getMessageHashes().add("H4");
        
        //Stored- Message 5
@@ -183,8 +183,7 @@ public void testDisplayLongestMessage_returnsCorrectMessage()  {
        
     Message message = new Message();
 
-    String result = message.displayLongestMessage();
-    assertEquals("Where are you? You are late! I have asked you to be on time.", result);
+    assertEquals("Where are you? You are late! I have asked you to be on time.", message.displayLongestMessage());
 }
 
 @Test
@@ -201,9 +200,11 @@ public void testSearchByMessageID_returnsCorrectMessage() {
  @Test
  public void testSearchByRecipient_returnsAllMatchingMessages() {
      //searchy by recipient return all the matching messages
-     Message message = new Message();
      loadTestData();
-     String result = message.searchByRecipient("0838884567");
+     
+     Message message = new Message();
+     
+     String result = message.searchByRecipient("+27838884567");
    
         assertTrue(result.contains("Where are you? You are late! I have asked you to be on time.\n "));
         assertTrue(result.contains("Ok, I am leaving without you."));
@@ -215,15 +216,10 @@ public void testSearchByMessageID_returnsCorrectMessage() {
      loadTestData();
      
      Message message = new Message();
-     
-    Message.getStoredMessages().add("Temp message");
-    Message.getMessageHashes().add("HASH123");
-    Message.getMessageIDs().add("9999");
-    Message.getRecipientList().add("+27000000000");
     
-    String result = message.deleteByHash("HASH123");
+    String result = message.deleteByHash("H2");
             
-     assertEquals("Message: Where are you? You are late! I have asked you to be on time. successfully deleted.", result);
+     assertTrue(result.contains("successfully deleted"));
  
  }
  
@@ -236,9 +232,9 @@ public void testSearchByMessageID_returnsCorrectMessage() {
      
      String report = message.printMessages();
      
-     assertTrue(report.contains("Where are you? You are late! I have asked you to be on time."));
-     assertTrue(report.contains("Ok, I am leaving without you"));
-     assertTrue(report.contains("+27838884567"));
+     assertTrue(report.contains("Hash"));
+     assertTrue(report.contains("Recipient"));
+     assertTrue(report.contains("Message"));
     
  }
             

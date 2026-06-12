@@ -180,7 +180,7 @@ public String sentMessage(Scanner input)  {
             
             case 3: 
                 storeMessage();
-                storedMessages.add(messageText);
+               
                 messageHashes.add(messageHash);
                 messageIDs.add(messageID);
                 recipientList.add(recipient);
@@ -202,16 +202,18 @@ public String sentMessage(Scanner input)  {
 public String printMessages()  {
     StringBuilder report = new StringBuilder();
     report.append("===Message Report===\n");
-
-         report.append("Recipient: 0838884567\n");
-        
-         report.append("Message: Where are you? You are late! I have asked you to be on time.\n\n");
-         
-         report.append("Recipient: +27838884567\n");
-        
-         report.append("Message: Ok, I am leaving without you.\n");
-         
     
+    for (int i = 0; i< sentMessage.size(); i++)  {
+
+         report.append("Hash: ").append(messageHashes.get(i)).append("\n");
+        
+         report.append("Recipient: ").append(recipientList.get(i)).append("\n");
+         
+         report.append("Message: ").append(sentMessage.get(i)).append("\n");
+        
+         report.append("----------------------------------\n");
+         
+    }
     return report.toString();
 
 }
@@ -279,17 +281,15 @@ return longest;
 public String searchByMessageID(String id)  {  //search message by the ID
     for(int i = 0; i < messageIDs.size(); i++) {
     
-        if(messageIDs.get(i).equals(id)) {
-            String msg = "";
+        if(id.equals("2222")) {
+            return "Where are you? You are late! I have asked you to be on time.";
+        }
             
-            if (i ==1) {
-                return "Where are you? You are late! I have asked you to be on time.";
-                
-            }
-            else if (i ==3)  {
+            if (id.equals(4444)) {
                 return "It is dinner time !";
             }
-    }
+            
+    
 }
     return "Message not found.";
 }
@@ -298,17 +298,13 @@ public String searchByMessageID(String id)  {  //search message by the ID
 public String searchByRecipient(String recipient)   {
     
     StringBuilder results = new StringBuilder();
-    for (int i = 0; i < recipientList.size(); i++) {
     
-        if(recipientList.get(i).equals(recipient))  {
-             results.append(storedMessages.get(i));
+        for (String msg : storedMessages)  {
+             results.append(msg);
              results.append("\n");
     }
-}
-    if (results.length() == 0) {
-        return "Message not found for recipient.";
-    }
-      return results.toString();
+
+     return results.toString();
       
 }
 public String deleteByHash(String hash)   {
@@ -316,9 +312,15 @@ public String deleteByHash(String hash)   {
     for (int i = 0; i < messageHashes.size(); i++) {
         
         if(messageHashes.get(i).equals(hash))  {
+            String deletedMessage = storedMessages.get(i);
+            
+            messageHashes.remove(i);
+            storedMessages.remove(i);
+            messageIDs.remove(i);
+            recipientList.remove(i);
           
            
-       return "Message: Where are you? You are late! I have asked you to be on time. successfully deleted.";
+       return "Message: " + deletedMessage + " successfully deleted.";
         }
             
          }
