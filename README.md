@@ -1,4 +1,4 @@
-# ChatApp Part 2
+# ChatApp Part 2 and 3
 
 ## Description - A chat application developed for PROG5121 POE part 2 using java.
 
