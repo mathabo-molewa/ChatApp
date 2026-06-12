@@ -57,5 +57,9 @@ Updated for Part 3 of the POE
 The project make use of this to run the unit tests automatically on every push
 
 ## Youtube video Part 3
+https://youtu.be/y63nTSyHMTA
+
+## Latest build
+<img width="1857" height="882" alt="image" src="https://github.com/user-attachments/assets/ddd90dc6-a0f3-4dca-9bd3-c89742e01138" />
 
 
