@@ -34,7 +34,28 @@ The project make use of this to run the unit tests automatically on every push
 ## Youtube video
 https://youtu.be/Sl3GcpMwmt8
 
+## ChatApp Part 3
 
+## Description - The chat application is updated for the POE Part 3 
 
+This includes
+-Adding arrays
+-Adding longest message and ID search
+-Adding recipient search and hash deletion
+-Adding JSON loading and report
+-Adding unit tests
+
+## How to run
+1. Open project in NetBeans
+2. Build project
+3. Run MainApp.java
+
+## Unit Testing
+Updated for Part 3 of the POE
+
+## GitHub Actions CI
+The project make use of this to run the unit tests automatically on every push
+
+## Youtube video Part 3
 
 
